@@ -98,7 +98,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
         button.image?.isTemplate = true
         button.appearsDisabled = !active && !needsPermission
         button.toolTip = needsPermission
-            ? "GoodScroll needs Accessibility permission"
+            ? "GoodScroll needs Device Control & Data Access (Accessibility) permission"
             : (active ? (settings.discrete ? "GoodScroll: \(settings.linesPerNotch) line\(settings.linesPerNotch == 1 ? "" : "s") per notch" : "GoodScroll: on") : "GoodScroll: off")
     }
 
@@ -107,10 +107,10 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
         menu.removeAllItems()
 
         if !Permissions.isTrusted {
-            let warn = NSMenuItem(title: "Accessibility permission needed", action: nil, keyEquivalent: "")
+            let warn = NSMenuItem(title: "Permission needed: Device Control & Data Access", action: nil, keyEquivalent: "")
             warn.image = NSImage(systemSymbolName: "exclamationmark.triangle", accessibilityDescription: nil)
             menu.addItem(warn)
-            menu.addItem(item("Open Accessibility Settings…", #selector(openAccessibility)))
+            menu.addItem(item("Open Privacy Settings…", #selector(openAccessibility)))
             menu.addItem(.separator())
         }
 

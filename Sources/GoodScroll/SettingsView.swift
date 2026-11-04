@@ -76,7 +76,7 @@ struct SettingsView: View {
                 HStack {
                     Image(systemName: trusted ? "checkmark.circle.fill" : "exclamationmark.triangle.fill")
                         .foregroundStyle(trusted ? .green : .orange)
-                    Text(trusted ? "Accessibility permission granted" : "Accessibility permission needed")
+                    Text(trusted ? "Device Control & Data Access granted" : "Needs Device Control & Data Access")
                     Spacer()
                     if !trusted { Button("Open Settings…") { Permissions.openAccessibilitySettings() } }
                 }

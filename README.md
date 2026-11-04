@@ -30,8 +30,11 @@ Download the zip from [Releases](https://github.com/vladjdk/goodscroll/releases)
 `GoodScroll.app` to `/Applications`. The build is ad-hoc signed and not notarized, so on first launch
 right-click → **Open** (or run `xattr -dr com.apple.quarantine /Applications/GoodScroll.app`).
 
-Grant **Accessibility** when prompted (System Settings → Privacy & Security → Accessibility). GoodScroll
-starts working as soon as you grant it; no relaunch needed.
+Grant permission when prompted: System Settings → Privacy & Security → **Device Control and Data Access**
+(called **Accessibility** on older macOS versions). GoodScroll starts working as soon as you grant it, with no relaunch.
+
+**Still says it needs permission after you switched it on?** The entry belongs to an older build. Select
+GoodScroll, remove it with **−**, then add `/Applications/GoodScroll.app` again with **+**.
 
 ### Build from source
 
@@ -42,9 +45,9 @@ make test      # unit tests
 make install   # builds a universal GoodScroll.app, copies it to /Applications, launches it
 ```
 
-> **Rebuilding resets the Accessibility permission.** Ad-hoc signatures change every build, so macOS
-> treats each build as a new app. Remove the old GoodScroll entry from the Accessibility list and
-> re-add it. Set `SIGN_IDENTITY="Developer ID Application: …"` to sign with a stable identity.
+> **Rebuilding resets the permission.** Ad-hoc signatures change every build, so macOS
+> treats each build as a new app. Remove the old GoodScroll entry from Device Control and Data Access
+> (Accessibility) and add it again. Set `SIGN_IDENTITY="Developer ID Application: …"` to sign with a stable identity.
 
 ## Why it doesn't time out
 
