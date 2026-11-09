@@ -21,6 +21,7 @@ lipo -create \
   .build/x86_64-apple-macosx/release/GoodScroll \
   -output "$APP/Contents/MacOS/GoodScroll"
 
+cp Resources/AppIcon.icns "$APP/Contents/Resources/AppIcon.icns"
 sed -e "s/__VERSION__/$VERSION/" -e "s/__BUILD__/$BUILD/" Resources/Info.plist > "$APP/Contents/Info.plist"
 
 codesign --force --options runtime --timestamp=none --sign "$SIGN_IDENTITY" "$APP"

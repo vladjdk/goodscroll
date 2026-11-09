@@ -93,9 +93,12 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
         guard let button = statusItem?.button else { return }
         let active = settings.enabled && tap.state == .running
         let needsPermission = !Permissions.isTrusted
-        let symbol = needsPermission ? "exclamationmark.triangle" : "computermouse"
-        button.image = NSImage(systemSymbolName: symbol, accessibilityDescription: "GoodScroll")
-        button.image?.isTemplate = true
+        if needsPermission {
+            button.image = NSImage(systemSymbolName: "exclamationmark.triangle", accessibilityDescription: "GoodScroll")
+            button.image?.isTemplate = true
+        } else {
+            button.image = ScrollGlyph.image
+        }
         button.appearsDisabled = !active && !needsPermission
         button.toolTip = needsPermission
             ? "GoodScroll needs Device Control & Data Access (Accessibility) permission"
