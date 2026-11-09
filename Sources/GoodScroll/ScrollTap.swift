@@ -143,11 +143,11 @@ final class ScrollTap {
             )
             if let out = ScrollTransform.apply(input, config: config) {
                 if let a = out.axis1 {
-                    Self.write(a, to: event, line: .scrollWheelEventDeltaAxis1,
+                    Self.write(a, to: event, hid: .y, line: .scrollWheelEventDeltaAxis1,
                                fixed: .scrollWheelEventFixedPtDeltaAxis1, point: .scrollWheelEventPointDeltaAxis1)
                 }
                 if let a = out.axis2 {
-                    Self.write(a, to: event, line: .scrollWheelEventDeltaAxis2,
+                    Self.write(a, to: event, hid: .x, line: .scrollWheelEventDeltaAxis2,
                                fixed: .scrollWheelEventFixedPtDeltaAxis2, point: .scrollWheelEventPointDeltaAxis2)
                 }
             }
@@ -158,22 +158,28 @@ final class ScrollTap {
         }
     }
 
-    private static func write(_ action: AxisAction, to event: CGEvent,
+    private static func write(_ action: AxisAction, to event: CGEvent, hid: HIDScroll.Axis,
                               line: CGEventField, fixed: CGEventField, point: CGEventField) {
         switch action {
         case .setLines(let n):
             // Setting the integer line delta makes CoreGraphics recompute the
-            // fixed-point and pixel deltas consistently, so every app sees the same thing.
+            // fixed-point and pixel deltas consistently.
+            let original = event.getDoubleValueField(fixed)
             event.setIntegerValueField(line, value: n)
+            // Apps that read the attached HID event must at least agree on direction.
+            if n != 0, original != 0, (n < 0) != (original < 0) { HIDScroll.negate(hid, of: event) }
         case .negate:
             // Read all three first: writing the line field recomputes (and rounds) the others.
-            // Writing them back in this order preserves the exact accelerated magnitude.
+            // Pixel deltas are fractional on trackpads, so they must be read as doubles;
+            // reading them as integers rounds small movements away and makes scrolling choppy.
             let l = event.getIntegerValueField(line)
             let f = event.getDoubleValueField(fixed)
-            let p = event.getIntegerValueField(point)
+            let p = event.getDoubleValueField(point)
             event.setIntegerValueField(line, value: -l)
             event.setDoubleValueField(fixed, value: -f)
-            event.setIntegerValueField(point, value: -p)
+            event.setDoubleValueField(point, value: -p)
+            // AppKit, WebKit and Chromium read trackpad deltas from the attached IOHIDEvent.
+            HIDScroll.negate(hid, of: event)
         }
     }
 }
